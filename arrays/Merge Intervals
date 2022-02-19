@@ -1,0 +1,33 @@
+//56. Given an array of intervals where intervals[i] = [starti, endi], 
+//merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
+//Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+//Output: [[1,6],[8,10],[15,18]]
+
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        vector<vector<int>> merged;
+        if(intervals.size() == 0) return merged;
+        
+        //sort to keep the intervals with lower start ahead : 
+        sort(intervals.begin(), intervals.end());
+        
+        vector<int> temp = intervals[0];
+        for(auto ele : intervals){
+            if(ele[0] <= temp[1]){
+                temp[1] = max(temp[1],ele[1]);
+            }
+            
+            else{
+                merged.push_back(temp);
+                temp = ele;
+            }
+        }
+        
+        //once the loop is over temp[] contains the last interval 
+        //but that's inserted into the answer 
+        
+        merged.push_back(temp);
+        return merged;
+    }
+};
