@@ -1,0 +1,50 @@
+560. Subarray Sum Equals K
+
+Given an array of integers nums and an integer k, return the total number of subarrays whose sum equals to k.
+
+Example 1:
+
+Input: nums = [1,1,1], k = 2
+Output: 2
+
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        int n = nums.size();
+        
+        int count = 0;
+        
+        //preprocess the sum of elements as we move rightwards : 
+        int right[n];
+        right[0] = nums[0];
+        
+        for(int i=1;i<n;i++){
+            right[i] = nums[i] + right[i-1];
+        }
+        
+        //map to store the sum and their occurences : 
+        unordered_map<int,int> mp;
+        
+        for(int i=0;i<n;i++){
+            
+            //got the reqd subarray 0...i : 
+            if(right[i] == k){
+                count++;
+            }
+            
+            
+            //if sum(i....j) = k, then right[i] + right[j] = k
+            // => right[j] = right[i] - k
+            // => if right[j] exists in the map then there is a subarray possible (i...j)
+            // the no. of subarrays would be the no. of occurence of right[j]
+            if(mp.find(right[i] - k) != mp.end()){
+                count += mp[right[i] - k];
+            }
+            
+            //including the sum till i in the map if it not exists till now :
+            mp[right[i]]++;
+        }
+        
+        return count;
+    }
+};
