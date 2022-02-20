@@ -1,0 +1,64 @@
+18. 4Sum
+Given an array nums of n integers, return an array of all the unique quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:
+
+0 <= a, b, c, d < n
+a, b, c, and d are distinct.
+nums[a] + nums[b] + nums[c] + nums[d] == target
+You may return the answer in any order.
+
+ 
+Example 1:
+
+Input: nums = [1,0,-1,0,-2,2], target = 0
+Output: [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> ans;
+        int n = nums.size();
+        
+        if(nums.size() == 0) return ans;
+        
+        sort(nums.begin(),nums.end());
+        
+        for(int i=0;i<n-3;i++){
+            for(int j=i+1;j<n-2;j++){
+                int target2 = target - nums[i] - nums[j];
+                
+                int l = j+1, r=n-1;
+                while(l < r){
+                    int sum = nums[l] + nums[r];
+                    
+                    if(sum == target2){
+                        vector<int> quad(4,0);
+                        quad[0] = nums[i];
+                        quad[1] = nums[j];
+                        quad[2] = nums[l];
+                        quad[3] = nums[r];
+                        
+                        ans.push_back(quad);
+                        
+                        //avoid the duplicates of quad[2]
+                        while(l<r and nums[l] == quad[2]) l++;
+                    
+                        //avoid the duplicates of quad[3]
+                        while(l<r and nums[r] == quad[3]) r--;
+                    }
+                    
+                    else if(sum > target2) r--;
+                    else l++;
+                    
+                }
+                
+                //avoid the duplicates of quad[1]
+                while(j<n-2 and nums[j+1] == nums[j]) j++;
+            }
+            
+            //avoid the duplicates of quad[0]
+            while(i<n-3 and nums[i+1] == nums[i]) i++;
+        }
+        
+        return ans;
+    }
+};
