@@ -1,0 +1,79 @@
+445. Add Two Numbers II
+
+You are given two non-empty linked lists representing two non-negative integers. The most significant digit comes first and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
+
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+Example 1:
+7->2->4->3
+   5->6->4
+Ans :
+7->8->0->7
+
+Input: l1 = [7,2,4,3], l2 = [5,6,4]
+Output: [7,8,0,7]
+Example 2:
+
+Input: l1 = [2,4,3], l2 = [5,6,4]
+Output: [8,0,7]
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        stack<int> s1, s2;
+        ListNode *h1 = l1, *h2 = l2;
+        
+        //insert the elements from LL into stacks :
+        while(h1){
+            s1.push(h1->val);
+            h1 = h1->next;
+        }
+        
+        while(h2){
+            s2.push(h2->val);
+            h2 = h2->next;
+        }
+        
+        int carry = 0;
+        ListNode *temp = NULL;
+        
+        //if s1,s2 are not empty or there's some carry term :
+        while(!s1.empty() || !s2.empty() || carry){
+            //initialise the sum with carry : 
+            int sum = carry;
+            
+             
+            //sum up the digits : 
+            if(!s1.empty()){
+                sum += s1.top();
+                s1.pop();
+            }
+            
+            if(!s2.empty()){
+                sum += s2.top();
+                s2.pop();
+            }
+            
+            //get the carry term
+            carry = sum/10;
+            
+            //attach the sum of digits in the reqd LL : 
+            ListNode *newNode = new ListNode(sum%10);
+            
+            newNode->next = temp;
+            temp = newNode;
+        }
+        
+        return temp;
+    }
+};
