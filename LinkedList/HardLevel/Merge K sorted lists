@@ -1,0 +1,122 @@
+You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
+
+Merge all the linked-lists into one sorted linked-list and return it.
+
+Example 1:
+
+Input: lists = [[1,4,5],[1,3,4],[2,6]]
+Output: [1,1,2,3,4,4,5,6]
+
+/*CODE : */
+
+#include<bits/stdc++.h>
+using namespace std;
+
+class node{
+public : 
+    int val;
+    node* next;
+
+    node(int data){
+        val = data;
+        next = NULL;
+    }
+
+};
+
+void insertAtTail(node* &head, int val){
+
+    node* n = new node(val);
+
+    if(head==NULL){
+        head = n;
+        return;
+    }
+
+    node* temp = head;
+    while(temp -> next!= NULL){
+        temp = temp -> next;
+    }
+    temp->next=n;
+}
+
+void display(node* head){
+    node* temp = head;
+    while(temp != NULL){
+        cout<<temp->val<<"->";
+        temp=temp->next;
+    }
+    cout<<"NULL"<<endl;
+}
+
+class cmp{
+    public :
+    bool operator() (node *A, node *B){
+        return A->val > B->val;
+    }
+};
+
+node *mergeKLists(vector<node*>& lists){
+
+    node *dummy = new node(-1);
+    node *tail = dummy;
+
+    //min heap to store the node with smallest values at the top : 
+    priority_queue<node*, vector<node*>, cmp> pq;
+
+    for(auto ele : lists){
+        if(ele != NULL){
+            pq.push(ele);
+        }
+    }
+
+    while(pq.size()){
+        
+        //get the smallest node : 
+        node *temp = pq.top();
+        //connect the smaller node to reqd LL : 
+        tail->next = temp;
+        //update tail to latest node 
+        tail = temp;
+        //remove the current node from minHeap : 
+        pq.pop();
+        
+        //insert the next node of current node in the heap : 
+        if(temp->next!=NULL){
+            pq.push(temp->next);
+        }
+    }
+    
+    return dummy->next;
+}
+
+
+int main(){
+
+    //example : 
+    
+    node *h1 = NULL, *h2=NULL, *h3=NULL;
+
+    insertAtTail(h1,1);
+    insertAtTail(h1,4);
+    insertAtTail(h1,5);
+
+    insertAtTail(h2,1);
+    insertAtTail(h2,3);
+    insertAtTail(h2,4);
+
+    insertAtTail(h3,2);
+    insertAtTail(h3,6);
+
+    vector<node*> v;
+    v.push_back(h1);
+    v.push_back(h2);
+    v.push_back(h3);
+
+    display(h1);
+    display(h2);
+    display(h3);
+
+    display(mergeKLists(v));
+    return 0;
+}
